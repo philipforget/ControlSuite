@@ -9,7 +9,7 @@
 			var keyframeXML:XML =<positionKeyframe>
 						  <keyframeOrder>0</keyframeOrder>
 						  <keyframeColor>new ColorBank().green</keyframeColor>
-						  <keyframeImage>placeHolder.png</keyframeImage>
+						  <keyframeImage>placeholder.png</keyframeImage>
 						  <keyframeDelay>1000</keyframeDelay>
 						  <keyframeSound></keyframeSound>
 						  <keyframeSoundLoopCount>0</keyframeSoundLoopCount>

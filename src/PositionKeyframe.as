@@ -91,6 +91,7 @@
 		{
 			return(keyframeImage);
 		} 
+
 		public function setKeyframeImage(keyframeImage:String):void
 		{
 			this.keyframeImage = keyframeImage;

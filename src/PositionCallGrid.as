@@ -94,10 +94,19 @@
 			
 			//if(GlobalVars.vars.trackingCamera) {
 				//camera = Camera.getCamera(GlobalVars.vars.trackingCamera);
-				camera = Camera.getCamera();
 			//}
 				
-			video.attachCamera(camera);
+			try {
+				camera = Camera.getCamera();
+				camera.setQuality(0,100);
+				camera.setMode(320,240,30,false);
+
+				video.attachCamera(camera);
+			}
+			catch(e:Error){
+				// 
+			}
+
 			video.smoothing = false;
 			
 			colorPickerBitmapData = new BitmapData(320, 240);

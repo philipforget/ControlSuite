@@ -119,10 +119,12 @@
 			addChild(keyFrameNavigation);
 			
 			iconLoader = new Loader();
+			iconLoader.addEventListener(IOErrorEvent.IO_ERROR, loader_error);
 			
 			var iconLoaderMask:Sprite = new Sprite();
 			iconLoaderMask.graphics.beginFill(0xFF0000);
 			iconLoaderMask.graphics.drawRect(0, 0, imageWidth, imageHeight);
+			iconLoaderMask.cacheAsBitmap = true;
 			addChild(iconLoaderMask);
 			addChild(iconLoader);
 			
@@ -171,8 +173,8 @@
 			if (!currentKeyframe)
 				currentKeyframe = 0;
 				
-			
-			iconLoader.load(new URLRequest("../KeyframeImages/" + position.getKeyframe(currentKeyframe).getKeyframeImage()));
+			iconLoader.load(new URLRequest("/static/KeyframeImages/" + position.getKeyframe(currentKeyframe).getKeyframeImage()));
+
 			var iconLength:Number = (positionBankWidth) / positionKeyframeArray.length;
 			scrubberMax = positionBankWidth - iconLength;
 			try
@@ -231,8 +233,13 @@
 		private function mouseMoveListener(e:MouseEvent):void
 		{
 			var tempIndex:Number = Math.floor((iconOverlay.x+(.5*iconOverlay.width) )/ iconOverlay.width);
-			if (tempIndex != currentKeyframe)
-				showKeyframeImage(Math.floor((iconOverlay.x+(.5*iconOverlay.width) )/ iconOverlay.width));
+			try {
+				if (tempIndex != currentKeyframe){
+					showKeyframeImage(Math.floor((iconOverlay.x+(.5*iconOverlay.width) )/ iconOverlay.width));
+				}
+			}
+			catch(e:Error){}
+
 			iconOverlay.x=mouseX-scrubberXOffset;
 			
 			if(iconOverlay.x <= scrubberMin)
@@ -250,8 +257,10 @@
 		
 		private function showKeyframe(index:Number):void
 		{
-			if(currentKeyframe!=index)
-				iconLoader.load(new URLRequest("../KeyframeImages/"+position.getKeyframe(index).getKeyframeImage()));
+			if(currentKeyframe!=index){
+				iconLoader.load(new URLRequest("/static/KeyframeImages/"+position.getKeyframe(index).getKeyframeImage()));
+			}
+
 			currentKeyframe = index;
 			
 			Tweener.removeTweens(iconOverlay);
@@ -262,7 +271,8 @@
 		private function showKeyframeImage(index:Number):void
 		{
 			currentKeyframe = index;
-			iconLoader.load(new URLRequest("../KeyframeImages/"+position.getKeyframe(index).getKeyframeImage()));
+			iconLoader.load(new URLRequest("/static/KeyframeImages/"+position.getKeyframe(index).getKeyframeImage()));
+
 		}
 		
 		public function getPosition():Position
@@ -304,7 +314,7 @@
 				positionNameText.text = positionNameText.text.substring(0, positionNameText.text.length - 1);
 			
 		}
-		
+
 		private function descriptionChangeListener(e:Event):void
 		{
 			if (positionDescriptionText.height < imageHeight)
@@ -326,6 +336,8 @@
 		{
 			objectConnection.dispatchEvent(new ColorPickerEvent(ColorPickerEvent.COLOR_CALL, false, false, 0xFFFF0000, position.setPositionColor));
 		}
-	
+
+		private function loader_error(e:IOErrorEvent):void {
+		}
 	}
 }

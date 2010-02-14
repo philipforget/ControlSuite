@@ -60,10 +60,16 @@
 			
 			//if(GlobalVars.vars.keyframeCamera.length)
 				//camera = Camera.getCamera(GlobalVars.vars.keyframeCamera);
-				camera = Camera.getCamera();
-				
 			video = new Video(320, 240);
-			video.attachCamera(camera);
+			try {
+				camera = Camera.getCamera();
+				camera.setQuality(0,100);
+				camera.setMode(320,240,30,false);
+				video.attachCamera(camera);
+			}
+			catch(e:Error){
+				// Silently fail if there is no camera
+			}
 			video.scaleX = .75;
 			video.scaleY = .75;
 			video.rotation = 90;

@@ -54,8 +54,10 @@
 		}
 		private function drawCell(e:Event = null):void
 		{
-			
-				imageLoader.load(new URLRequest('../keyframeImages/' + position.getKeyframe(0).getKeyframeImage()));
+			try {
+				imageLoader.load(new URLRequest('/static/KeyframeImages/' + position.getKeyframe(0).getKeyframeImage()));
+			}
+			catch(e:Error){}
 		}
 		public function setCurrent():void
 		{

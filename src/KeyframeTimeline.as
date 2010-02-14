@@ -51,8 +51,9 @@
 			timelineHolder.addChild(timeline);
 			
 			timelineMask = new Sprite();
-			timelineMask.graphics.beginFill(0xFF0000, 0);
-			timelineMask.graphics.drawRect(0, -20, timelineWidth, 260);
+			timelineMask.graphics.beginFill(0xFF0000);
+			timelineMask.graphics.drawRect(0, 0, timelineWidth, 240);
+			timelineMask.cacheAsBitmap = true;
 			
 			timelineHolder.addChild(timelineMask)
 			

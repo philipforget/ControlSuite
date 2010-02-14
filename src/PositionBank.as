@@ -84,8 +84,9 @@
 			positionBankMask = new Sprite;
 			positionBank = new Sprite;
 			
-			positionBankMask.graphics.beginFill(0x000000);
+			positionBankMask.graphics.beginFill(0xFF0000);
 			positionBankMask.graphics.drawRect(0, 0, positionBankWidth, positionBankHeight);
+			positionBankMask.cacheAsBitmap = true;
 			
 			positionBankHolder.addChild(positionBank);
 			positionBankHolder.addChild(positionBankMask);

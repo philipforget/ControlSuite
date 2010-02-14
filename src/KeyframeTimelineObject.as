@@ -2,19 +2,24 @@
 {
 	import flash.display.*;
 	import flash.events.*;
+	import flash.net.*;
 	import flash.geom.Matrix;
+	import flash.utils.*;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.media.Camera;
 	import flash.media.Video;
+	import flash.utils.ByteArray;
 	import flash.net.*;
 	import flash.net.URLRequest;
 	import flash.text.*;
 	import caurina.transitions.*;
-	//import com.adobe.images.PNGEncoder;
+	import com.adobe.images.PNGEncoder;
 	import flash.utils.Timer;
 	import com.makingthings.makecontroller.*;
 	import flash.media.*;
+	import com.chevalierforget.console;
+	import com.dynamicflash.util.Base64;
 	
 	public class KeyframeTimelineObject extends Sprite
 	{
@@ -62,14 +67,14 @@
 		
 		private var inputFormat:TextFormat;
 	
-		
 		private var saveImageButton:RasterButton;
+
+		private var temporary_image_name:String;
 		
 		public function KeyframeTimelineObject(objectConnection:ObjectConnection, positionKeyframe:PositionKeyframe, position:Position, keyframeOrder:uint, video:Video)
 		{
 			this.objectConnection = objectConnection;
 			this.video = video;
-			
 			
 			inputFormat = new TextFormat();
 			inputFormat.align = TextFormatAlign.RIGHT;
@@ -90,8 +95,6 @@
 			imageHolder.scaleY = .75;
 			addChild(imageHolder);
 			imageHolder.addEventListener(IOErrorEvent.IO_ERROR, imageHolderError);
-			
-		
 			
 			createMenu();
 			
@@ -114,8 +117,9 @@
 			snapShot.scaleY = .75;
 			
 			webcamMask = new Sprite();
-			webcamMask.graphics.beginFill(0xFF0000, .25);
+			webcamMask.graphics.beginFill(0xFF0000);
 			webcamMask.graphics.drawRect(0, 0, 180, 240);
+			webcamMask.cacheAsBitmap = true;
 			
 			webcamMask.y = 240;
 			webcamHolder.addChild(video);
@@ -124,10 +128,7 @@
 			addChild(webcamHolder);
 			webcamHolder.mask = webcamMask;
 			
-			
 			saveFileReferance = new FileReference();
-			
-			
 			
 			selectedBorder = new Sprite();
 			
@@ -165,8 +166,9 @@
 		{
 			clearCell();
 			drawBackgroundSprite();
-			if(GlobalVars.vars.mode == 'Standard')
-				imageHolder.load(new URLRequest('../KeyframeImages/' + positionKeyframe.getKeyframeImage()));
+
+			imageHolder.load(new URLRequest('/static/KeyframeImages/' + positionKeyframe.getKeyframeImage()));
+
 		}
 		
 		public function updateKeyframeOrderLabel(keyframeOrder:uint):void
@@ -181,8 +183,9 @@
 						
 			try
 			{
-				while (backgroundSprite.getChildAt(0))
+				while (backgroundSprite.getChildAt(0)){
 					backgroundSprite.removeChildAt(0);
+				}
 			}
 			catch (E:Error)
 			{
@@ -214,7 +217,6 @@
 			var bitmap:Bitmap = new Bitmap(finalGradient);
 			bitmap.x = 180;
 			
-			
 			backgroundSprite.addChild(bitmap);
 		}
 		private function clearCell():void
@@ -232,8 +234,7 @@
 		
 		private function imageHolderError(e:Event):void
 		{
-			if(GlobalVars.vars.mode == GlobalVars.STANDARD_MODE)
-			imageHolder.load(new URLRequest('placeholder.png'));
+
 		}
 		
 		private function shiftLeftListener(e:MouseEvent):void
@@ -259,24 +260,64 @@
 		
 		private function saveImage(e:MouseEvent):void
 		{
-		
-		
-				var matrix:Matrix = new Matrix();
-				matrix.rotate( (Math.PI / 2));
-				matrix.tx = 240;
-				tempBMP.draw(video, matrix);
-			//	saveFileReferance.save(new PNGEncoder().encode(tempBMP),position.getPositionName()+"_"+new Date().getTime().toString()+'.png');
-				saveFileReferance.addEventListener(Event.COMPLETE, saveCompleteListener);
+			var matrix:Matrix = new Matrix();
+			matrix.rotate( (Math.PI / 2));
+			matrix.tx = 240;
+			tempBMP.draw(video, matrix);
+
+			snapShot = new Bitmap(tempBMP, 'auto', true);
+			snapShot.alpha = 0;
+			snapShot.scaleX = .75;
+			snapShot.scaleY = .75;
+
+			var png:ByteArray = PNGEncoder.encode(tempBMP);
+
+			var tempDate:Date = new Date();
+			temporary_image_name = String(tempDate.getTime())+".png";
+
+			var base64Bytes:String = Base64.encodeByteArray(png);
+			var url_vars:URLVariables = new URLVariables();
+			url_vars.imageName = temporary_image_name;
+			url_vars.imageData = base64Bytes;
+
+			var image_save_request:URLRequest = new URLRequest('/save_image');
+			image_save_request.method = URLRequestMethod.POST;
+			image_save_request.data = url_vars;
+
+			var image_save_urlloader:URLLoader = new URLLoader();
+
+			image_save_urlloader.addEventListener(Event.COMPLETE, load_complete_handler);	
+			image_save_urlloader.addEventListener(HTTPStatusEvent.HTTP_STATUS, httpStatus_handler);	
+			image_save_urlloader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, security_handler);	
+			image_save_urlloader.addEventListener(IOErrorEvent.IO_ERROR, io_error_handler);	
+
+			image_save_urlloader.load(image_save_request);
+				
 		}
 	
-		private function saveCompleteListener(e:Event):void
+		private function load_complete_handler(e:Event):void{
+			saveCompleteListener();
+		}
+		private function httpStatus_handler(e:HTTPStatusEvent):void{
+			console.log('http status '+e);
+		}
+		private function security_handler(e:SecurityErrorEvent):void{
+			console.log('security error '+e);
+		}
+		private function io_error_handler(e:IOErrorEvent):void{
+			console.log('ioerror: '+e);
+		}
+
+		private function saveCompleteListener(e:Event=null):void
 		{
-			this.positionKeyframe.setKeyframeImage(saveFileReferance.name);
+
+			this.positionKeyframe.setKeyframeImage(temporary_image_name);
 			
 			position.dispatchEvent(new PositionEvent(PositionEvent.POSITION_EDITED, position));
 			position.dispatchEvent(new PositionEvent(PositionEvent.POSITION_IMAGE_EDITED, position));
 			
 			drawCell();
+
 		}
 		
 	
