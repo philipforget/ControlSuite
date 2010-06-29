@@ -74,6 +74,8 @@
 			
 			positionDescriptionFormat = new TextFormat();
 			positionDescriptionFormat.color = 0xFFFFFF;
+			positionDescriptionFormat.font = "PixelMix"
+			positionDescriptionFormat.size = 8;
 			
 			positionNameTextBacker = new Sprite();
 			drawNameBacker();
@@ -91,6 +93,7 @@
 			positionDescriptionText.height = imageHeight;
 			positionDescriptionText.autoSize = TextFieldAutoSize.LEFT;
 			positionDescriptionText.wordWrap = true;
+			positionDescriptionText.embedFonts = true;
 
 			positionDescriptionText.type = TextFieldType.INPUT;
 			positionDescriptionText.addEventListener(Event.CHANGE, descriptionChangeListener);

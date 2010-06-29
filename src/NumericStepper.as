@@ -61,13 +61,15 @@
 			
 			
 			textFieldFormat = new TextFormat();
-			textFieldFormat.size = 11;
+			textFieldFormat.size = 8;
+			textFieldFormat.font = "PixelMix";
 			textFieldFormat.color = 0xFFFFFF;
 			textFieldFormat.align = TextFormatAlign.CENTER;
 			
 			textFieldFormatRed = new TextFormat();
 			textFieldFormatRed.color = 0xFF0000
-			textFieldFormatRed.size = 11;
+			textFieldFormatRed.size = 8;
+			textFieldFormatRed.font = "PixelMix"
 			textFieldFormatRed.align = TextFormatAlign.CENTER;
 			
 			textField = new TextField();
@@ -76,11 +78,18 @@
 			
 			textField.type = 'input';
 			textField.defaultTextFormat = textFieldFormat;
-			textField.y = 10;
-			textField.background = true;
+			textField.y = 12;
 			textField.backgroundColor = 0x222222;
 			textField.restrict = '-0123456789';
-			
+			textField.embedFonts = true;
+
+			var textFieldBackground:Sprite = new Sprite;
+			textFieldBackground.graphics.beginFill(0x222222);
+			textFieldBackground.graphics.drawRect(0,0,21,18);
+			textFieldBackground.x = 4;
+			textFieldBackground.y = 10;
+			addChild(textFieldBackground);
+
 			addChild(textField);
 			
 			textField.addEventListener(FocusEvent.FOCUS_OUT, outListener);

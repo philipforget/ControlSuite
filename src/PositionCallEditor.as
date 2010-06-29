@@ -18,8 +18,12 @@
 		
 		private var gridOptions:XMLList;
 		
-		public function PositionCallEditor(objectConnection:ObjectConnection, positionBank:PositionBank, gridOptions:XMLList) 
-		{
+		// Public Constructor
+		public function PositionCallEditor(
+			objectConnection:ObjectConnection,
+			positionBank:PositionBank,
+			gridOptions:XMLList
+		){
 			this.objectConnection = objectConnection;
 			this.positionBank = positionBank;
 			this.gridOptions = gridOptions;
@@ -30,7 +34,11 @@
 		{
 			saveFileReferance = new FileReference();
 			loadFileReferance = new FileReference();
-			var loadPositionCallsButton:RasterButton = new RasterButton('Load Call Bank', 160, new ColorBank().blue);
+			var loadPositionCallsButton:RasterButton = new RasterButton(
+				'Load Call Bank',
+				160,
+				new ColorBank().blue
+			);
 			addChild(loadPositionCallsButton);
 			loadPositionCallsButton.addEventListener(MouseEvent.CLICK, loadPositionCallBank);
 			
@@ -74,7 +82,7 @@
 		private function savePositionCallBank(e:MouseEvent):void
 		{
 			var tempXML:XML = positionCallGrid.getPositionCallBankXML();
-			//saveFileReferance.save(tempXML, 'CallBank_' + new Date().getTime()+'.xml');
+			saveFileReferance.save(tempXML, 'CallBank_' + new Date().getTime()+'.xml');
 			saveFileReferance.addEventListener(Event.CANCEL, cancelSave);
 			saveFileReferance.addEventListener(Event.COMPLETE, saveComplete);
 		}
@@ -89,7 +97,7 @@
 		
 		private function loadPositionXML(e:Event):void
 		{
-			//loadFileReferance.load();
+			loadFileReferance.load();
 			loadFileReferance.removeEventListener(Event.SELECT, loadPositionXML);
 			loadFileReferance.addEventListener(Event.COMPLETE, loadCompleteListener);
 		}
@@ -109,8 +117,8 @@
 		
 		private function loadCompleteListener(e:Event):void
 		{
-			//var tempCallXML:XML = new XML(loadFileReferance.data);
-			//positionCallGrid.assignPositionCalls(tempCallXML);
+			var tempCallXML:XML = new XML(loadFileReferance.data);
+			positionCallGrid.assignPositionCalls(tempCallXML);
 			clearLoadListeners();
 		}
 		

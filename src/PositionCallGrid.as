@@ -7,6 +7,7 @@
 	import flash.media.Video;
 	import flash.ui.Mouse;
 	import caurina.transitions.*;
+	import flash.geom.Rectangle;
 	
 	public class PositionCallGrid extends Sprite
 	{
@@ -103,6 +104,7 @@
 
 				video.attachCamera(camera);
 			}
+
 			catch(e:Error){
 				// 
 			}
@@ -128,10 +130,6 @@
 			loopRunWidth = Math.floor(video.width / skipFrame);
 			loopRunHeight = Math.floor(video.height / skipFrame);
 			loopRun = Math.floor(loopRunHeight * loopRunWidth);
-			
-			
-			
-			
 			
 			border.graphics.lineStyle(2, 0xFFFFFF, .5,true,LineScaleMode.NONE,CapsStyle.SQUARE,JointStyle.MITER);
 			border.graphics.beginFill(0xFF0000, 0);
@@ -182,7 +180,7 @@
 			
 			
 			
-			// addChild(trackingMarker); // UNCOMMENT TO SEE THE MARKER IN ACTION
+			addChild(trackingMarker); // UNCOMMENT TO SEE THE MARKER IN ACTION
 			
 			newScale = 0;
 			newY = 0;
@@ -232,10 +230,13 @@
 		
 		private function trackColor(e:Event):void
 		{
-			xp = 0;
-			yp = 0;
+			
 			videoBitmap.draw(video);
 			videoBitmap.lock();
+
+			/*
+			xp = 0;
+			yp = 0;
 			for(var i:uint=0;i<=loopRun;i++){			
 					if (videoBitmap.getPixel(xp * skipFrame, yp * skipFrame) >= (color - threshold))
 					{
@@ -257,6 +258,14 @@
 					xp=1;
 					yp++;
 				}
+			}
+			*/
+
+			var temp_rectangle:Rectangle = videoBitmap.getColorBoundsRect(0xFFFFFFFF, color, true);
+
+			if( temp_rectangle.x != 0 || temp_rectangle.y != 0){
+				newX = temp_rectangle.x;
+				newY = temp_rectangle.y;
 			}
 			
 			var columnChanged:Boolean = false;
@@ -284,8 +293,8 @@
 			
 			trackingMarker.x+= (newX-trackingMarker.x)/speed;
 			trackingMarker.y += (newY - trackingMarker.y) / speed;
-			trackingMarker.width += (newScale - trackingMarker.width)/speed;
-			trackingMarker.height+= (newScale- trackingMarker.height)/speed;
+			trackingMarker.width += (20 - trackingMarker.width)/speed;
+			trackingMarker.height+= (20- trackingMarker.height)/speed;
 			
 			videoBitmap.unlock();
 		}
@@ -417,7 +426,7 @@
 		}
 		private function setMouseColor(e:Event):void
 		{
-			color = colorPickerBitmapData.getPixel(mouseX, mouseY);
+			color = colorPickerBitmapData.getPixel32(mouseX, mouseY);
 			toggleSetColorSample();
 		}
 	}

@@ -22,6 +22,12 @@
 		[Embed(source = '../fonts/ahronbd.ttf', fontName = 'Ahron', fontWeight = 'bold')] 
 		public var Ahron:Class;
 		
+		[Embed(source = '../fonts/pixelmix.ttf', fontName = 'PixelMix', fontWeight = 'normal')] 
+		public var PixelMix:Class;
+
+		[Embed(source = '../fonts/C&C Red Alert [INET].ttf', fontName = 'RedAlert', fontWeight = 'normal')] 
+		public var RedAlert:Class;
+
 		// objectConnection will be used to call events through the object heirarchy
 		private var objectConnection:ObjectConnection;
 		
@@ -42,7 +48,7 @@
 		{
 			if(stage){
 				stage.align = StageAlign.TOP_LEFT;
-				stage.scaleMode = StageScaleMode.NO_SCALE;
+				stage.scaleMode = StageScaleMode.SHOW_ALL;
 			}
 
 			GlobalVars.vars.mode = GlobalVars.STANDARD_MODE;

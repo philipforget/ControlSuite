@@ -47,7 +47,7 @@
 			this.minValue = minValue;
 			
 			sliderBacker = new Sprite();
-			sliderBacker.graphics.lineStyle(0, 0xFFFFFF,.75);
+			sliderBacker.graphics.lineStyle(0, 0xFFFFFF, .2);
 			sliderBacker.graphics.lineTo(0, sliderHeight);
 			sliderBacker.x = buttonWidth/2;
 			

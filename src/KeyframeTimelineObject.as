@@ -14,7 +14,7 @@
 	import flash.net.URLRequest;
 	import flash.text.*;
 	import caurina.transitions.*;
-	import com.adobe.images.PNGEncoder;
+	import com.adobe.images.JPGEncoder;
 	import flash.utils.Timer;
 	import com.makingthings.makecontroller.*;
 	import flash.media.*;
@@ -70,15 +70,19 @@
 		private var saveImageButton:RasterButton;
 
 		private var temporary_image_name:String;
+
+		private var jpegencoder:JPGEncoder;
 		
 		public function KeyframeTimelineObject(objectConnection:ObjectConnection, positionKeyframe:PositionKeyframe, position:Position, keyframeOrder:uint, video:Video)
 		{
 			this.objectConnection = objectConnection;
 			this.video = video;
+
+			jpegencoder = new JPGEncoder(50);
 			
 			inputFormat = new TextFormat();
-			inputFormat.align = TextFormatAlign.RIGHT;
-			inputFormat.size = 12;
+			inputFormat.font = "PixelMix"
+			inputFormat.size = 8;
 			inputFormat.color = 0xFFFFFF;
 			
 			graphics.beginFill(0x000000, .25);
@@ -147,9 +151,10 @@
 			
 			keyframeOrderLabel = new TextField();
 			keyframeOrderLabel.autoSize = TextFieldAutoSize.LEFT;
+			keyframeOrderLabel.embedFonts = true;
 			keyframeOrderLabel.defaultTextFormat = inputFormat;
 			keyframeOrderLabel.backgroundColor = 0x222222;
-			keyframeOrderLabel.background = true;
+			//keyframeOrderLabel.background = true;
 			keyframeOrderLabel.text = String(keyframeOrder);
 			keyframeOrderLabel.x = 5;
 			keyframeOrderLabel.y = 5;
@@ -270,10 +275,10 @@
 			snapShot.scaleX = .75;
 			snapShot.scaleY = .75;
 
-			var png:ByteArray = PNGEncoder.encode(tempBMP);
+			var png:ByteArray = jpegencoder.encode(tempBMP);
 
 			var tempDate:Date = new Date();
-			temporary_image_name = String(tempDate.getTime())+".png";
+			temporary_image_name = String(tempDate.getTime())+".jpg";
 
 			var base64Bytes:String = Base64.encodeByteArray(png);
 			var url_vars:URLVariables = new URLVariables();
@@ -363,6 +368,11 @@
 				delayInput.text = positionKeyframe.getKeyframeDelay().toString();;
 			
 		}
+
+		private function delayInputClick(e:MouseEvent = null):void {
+			e.target.setSelection(0,e.target.length);
+		}
+
 		private function createMenu():void
 		{
 			
@@ -398,17 +408,20 @@
 			
 			delayInput = new TextField();
 			delayInput.defaultTextFormat = inputFormat;
+			delayInput.embedFonts = true;
 			delayInput.type = TextFieldType.INPUT;
 			delayInput.restrict = '1234567890';
 			delayInput.maxChars = 5;
-			delayInput.x = delayLabel.width+5;
+			delayInput.selectable = true;
+			delayInput.x = Math.floor(delayLabel.width+10);
 			delayInput.width = 35;
 			delayInput.height = 18;
-			delayInput.y = delayLabel.y-1;
+			delayInput.y = Math.floor(delayLabel.y + 3);
 			delayInput.text = (getPositionKeyframe().getKeyframeDelay().toString());
 			delayInput.addEventListener(Event.CHANGE, setDelay);
+			delayInput.addEventListener(MouseEvent.CLICK, delayInputClick);
 			
-			buttonHolder.addChild(delayLabelBacker);
+			//buttonHolder.addChild(delayLabelBacker);
 			buttonHolder.addChild(delayInput);
 			buttonHolder.addChild(delayLabel);
 			

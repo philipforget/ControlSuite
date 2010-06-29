@@ -188,6 +188,7 @@
 		
 		private function loadPositionBank(e:MouseEvent):void
 		{
+			trace('load position bank initiated');
 			loadFileReferance.browse();
 			loadFileReferance.addEventListener(Event.SELECT, loadSelected);
 			loadFileReferance.addEventListener(Event.CANCEL, cancelLoad);
@@ -195,27 +196,30 @@
 		}
 		private function cancelLoad(e:Event):void
 		{
+			trace('load canceled');
 			loadFileReferance.removeEventListener(Event.SELECT, loadSelected);
 			loadFileReferance.removeEventListener(Event.CANCEL, cancelLoad);
 		}
 		
 		private function loadSelected(e:Event):void
 		{
+			trace('load selected');
 			loadFileReferance.removeEventListener(Event.SELECT, loadSelected);
 			loadFileReferance.removeEventListener(Event.CANCEL, cancelLoad);
 	
 			loadFileReferance.addEventListener(Event.COMPLETE, xmlLoadComplete);
-			//loadFileReferance.load();
+			loadFileReferance.load();
 		}
 		
 		
 		private function xmlLoadComplete(e:Event):void
 		{
+			trace('loaded');
 			currentPosition = null;
 			positionsArray.length = 0;
 			positionsIDArray.length = 0;
-			//var tempPositionXML:XML = new XML(loadFileReferance.data);
-			//createPositionsArray(tempPositionXML);
+			var tempPositionXML:XML = new XML(loadFileReferance.data);
+			createPositionsArray(tempPositionXML);
 		}
 		
 		
@@ -265,7 +269,7 @@
 					xmlBank.appendChild(positionsArray[i].getPosition().getPositionXML());
 					
 				}
-			//	saveFileReferance.save(xmlBank);
+				saveFileReferance.save(xmlBank);
 			}
 		}
 		
