@@ -1,0 +1,1 @@
+A robotics sequencing suite which communicates over XML sockets using OSC. Currently controlls 8 servos and 8 digital outputs over ethernet or usb across 2 Make: Controllers.
